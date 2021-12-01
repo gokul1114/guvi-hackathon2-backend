@@ -2,13 +2,14 @@ import express from "express"
 import  {productRouter} from "./getProducts.js";
 import  {userRouter} from "./user.js";
 import cors from "cors";
+import dotenv from "dotenv";
 import { MongoClient } from "mongodb";
 
 
-
+dotenv.config()
 const app = express();
-const PORT = 9000;
-const URL = "mongodb+srv://Gokul:abcd1234@cluster0.bmifn.mongodb.net"
+const PORT = process.env.PORT || 9000;
+const URL = process.env.URL;
 app.use(express.json())
 app.use(cors())
 
