@@ -9,6 +9,6 @@ export const auth = (request, response, next) => {
         next();
     }
     catch(err) {
-        response.status(400).send( err)
+        response.status(401).send( err)
     }
 }

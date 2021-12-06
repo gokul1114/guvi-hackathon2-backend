@@ -15,5 +15,14 @@ router
  resp.send(productList)
 })
 
-
+router
+.route("/add")
+.post(async(req,resp) => {
+    const data = req.body
+    const productList =  await client
+    .db("sample")
+    .collection("products")
+    .insertOne(data)
+    resp.send({message : "added Successfully"})
+})
 export const productRouter = router;

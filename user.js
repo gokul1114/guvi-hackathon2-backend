@@ -2,6 +2,7 @@ import express from "express";
 import { client } from "./index.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { ObjectId } from "bson";
 
 const router = express.Router();
 
@@ -13,15 +14,18 @@ router.route("/").get(async (req, resp) => {
     .findOne({ _id: _id });
 });
 
-router.route("/addToCart").post(async (req, resp) => {
-  const { productId,_id } = req.body;
-
-  console.log(data);
+router
+.route("/addToCart")
+.post(async (req, resp) => {
+  const { product ,_id } = req.body;
+  const objId = new ObjectId(_id)
+  console.log(_id);
   const cartItems = await client
     .db("sample")
     .collection("rentalUsers")
-    .updateOne({ _id: _id }, { $set: { cartItems: productId } });
+    .updateOne({ _id: objId }, { $push: { cartItems: product } });
   //console.log(productList)
+  console.log(cartItems)
   resp.send({message : "added to cart successfully"});
 });
 
@@ -62,12 +66,12 @@ router
 router
 .route("/login")
 .post(async(req,res) => {
+    console.log("inside login")
     const {name, password} = req.body
     const user = await client
     .db("sample")
     .collection("rentalUsers")
     .findOne({name:name});
-
     if(user) {
         const passwordFromDB = user.hashedPassword;
         // console.log(user,password,passwordFromDB)
@@ -89,14 +93,27 @@ router
 })
 
 router
-.route("/add")
+.route("/getCartDetails")
 .post(async(req,resp) => {
-    const data = req.body
-    const productList =  await client
+    console.log("inside getCartDetails")
+    const _id = new ObjectId(req.body._id)
+    const cartDetails =  await client
     .db("sample")
-    .collection("products")
-    .insertOne(data)
-    resp.send({message : "added Successfully"})
+    .collection("rentalUsers")
+    .findOne({_id : _id},{cartItems : 1})
+    console.log(cartDetails.cartItems)
+    resp.send(cartDetails.cartItems)
+})
+
+router
+.route("/addDeliveryAddress")
+.post(async(req,resp) => {
+  const _id = new ObjectId(req.body._id)
+  const addDeliveryAddress = await client
+  .db("sample")
+  .collection("rentalUsers")
+  .updateOne({ _id: _id }, { $set: { deliveryAddress: req.body } })
+  resp.send(addDeliveryAddress)
 })
 
 
