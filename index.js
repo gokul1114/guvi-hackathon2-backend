@@ -9,7 +9,7 @@ import { MongoClient } from "mongodb";
 dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 9000;
-const URL = process.env.URL || "mongodb+srv://Gokul:abcd1234@cluster0.bmifn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const URL = process.env.URL ;
 app.use(express.json())
 app.use(cors())
 
